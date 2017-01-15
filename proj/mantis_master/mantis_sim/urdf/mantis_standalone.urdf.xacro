@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<robot name="MantisStandalone" xmlns:xacro="http://ros.org/wiki/xacro">
+<!--
+	<link name="mantis_on_rack_root">
+		<static>false</static>
+	</link>
+-->
+	<link name="world"/>
+	<xacro:include filename="$(find mantis_sim)/urdf/model.urdf.xacro" />
+    <xacro:mantis_arm parent="world">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:mantis_arm>
+</robot>

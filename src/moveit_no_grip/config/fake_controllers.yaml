@@ -1,0 +1,24 @@
+controller_list:
+  - name: fake_arm_controller
+    joints:
+      - J1_roll
+      - J2_pitch
+      - J3_roll
+      - J4_pitch
+      - J5_roll
+      - J6_pitch
+      - J7_roll
+      - J8_pitch
+  - name: fake_tray_controller
+    joints:
+      - nanoracks_tray
+  - name: fake_door_controller
+    joints:
+      - merlin_hinge
+  - name: fake_gripper_controller
+    joints:
+      - J9_wrist
+      - J1_L_wrist
+      - J2_L_wrist
+      - J1_R_wrist
+      - J2_R_wrist

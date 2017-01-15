@@ -1,0 +1,18 @@
+To Do List
+
+
+Short Term
+- Write node that commands joint positions to Mantis, by publishing to joint state nodes
+- Write IK Solver service for the MANTIS arm
+
+Mid Term
+- Create ISS environment in Gazebo
+- Place MANTIS in proper location
+
+Long Term
+- Import and edit ISS environment in MoveIt and other path planning tools
+- Understand Ethenet-ROS interface and how it unpacks raw data
+	- Write node that takes raw data and sends it out to the appropriate topics
+- Hash out protocol for responding to requests to use the robot: autonomous vs teleoperated
+-  Model end effectors for MANTIS to use
+- Develop new algorithms to be tested using the MANTIS platform

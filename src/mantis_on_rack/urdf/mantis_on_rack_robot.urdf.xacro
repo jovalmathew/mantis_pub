@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<robot name="MantisOnRackRViz" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<link name="world"/>
+	<xacro:include filename="$(find mantis_on_rack)/urdf/mantis_on_rack.urdf.xacro" />
+    <xacro:mantis_on_rack env_base="world">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:mantis_on_rack>
+</robot>
+

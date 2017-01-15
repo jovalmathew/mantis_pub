@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=mantis_launcher
+Terminal=true
+Icon=/home/nbritton/MANTIS_workspace/mantis.ico
+Exec=/home/nbritton/MANTIS_workspace/mantis_simulation.sh

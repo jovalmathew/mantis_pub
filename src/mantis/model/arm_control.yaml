@@ -1,0 +1,45 @@
+mantis:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  # Position Controllers ---------------------------------------
+  #
+  ###
+  J1_control:
+    type: effort_controllers/JointPositionController
+    joint: J1_roll
+    pid: {p: 1000.0, i: 0.1, d: 1.0}
+  J2_control:
+    type: effort_controllers/JointPositionController
+    joint: J2_pitch
+    pid: {p: 10.0, i: 0.3, d: 2.0}
+  J3_control:
+    type: effort_controllers/JointPositionController
+    joint: J3_roll
+    pid: {p: 1000.0, i: 0.1, d: 1.0}
+  J4_control:
+    type: effort_controllers/JointPositionController
+    joint: J4_pitch
+    pid: {p: 1000.0, i: 0.1, d: 1.0}
+  J5_control:
+    type: effort_controllers/JointPositionController
+    joint: J5_roll
+    pid: {p: 1000.0, i: 0.1, d: 1.0}
+  J6_control:
+    type: effort_controllers/JointPositionController
+    joint: J6_pitch
+    pid: {p: 1000.0, i: 0.1, d: 1.0}
+  J7_control:
+    type: effort_controllers/JointPositionController
+    joint: J7_roll
+    pid: {p: 1000.0, i: 0.1, d: 1.0}
+  J8_control:
+    type: effort_controllers/JointPositionController
+    joint: J8_pitch
+    pid: {p: 1000.0, i: 0.1, d: 1.0}
+  J9_control:
+    type: effort_controllers/JointPositionController
+    joint: J9_wrist
+    pid: {p: 1000.0, i: 0.1, d: 1.0}

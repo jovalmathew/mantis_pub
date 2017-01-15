@@ -1,0 +1,19 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find mantis_control)/config/mantis_control.yaml" command="load"/>
+
+
+  <!-- Load the controllers -->
+  <node name="spawn_controller" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/mantis" args=" elbow1_pos_control elbow2_pos_control elbow3_pos_control roll1_pos_control roll2_pos_control roll3_pos_control wrist_pos_control joint_state_controller">
+  </node> 
+	<!--     -->
+
+  <!-- Convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+  respawn="false" output="screen">
+  	<remap from="/joint_states" to="/mantis/joint_states" />
+  </node> 
+  
+
+</launch>

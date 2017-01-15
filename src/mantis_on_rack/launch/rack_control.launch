@@ -1,0 +1,27 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam ns='mantis' file="$(find mantis_on_rack)/control/rack_control.yaml" command="load"/>
+
+
+  <!-- Load the controllers for each actuation point-->
+  <node name="tray_controller_spawner" pkg="controller_manager"
+        type="spawner"
+        respawn="false"
+        output="screen"
+        ns="/mantis"
+        args="express_rack/joint_state_controller express_rack/Tray_control ">
+  </node>
+
+  <!-- Convert joint states to TF transforms for rviz, etc -->
+  <node name="rack_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher"
+        respawn="false"
+        output="screen">
+
+        <remap from="/joint_states" to="/mantis/joint_states" />
+  </node>
+
+
+</launch>

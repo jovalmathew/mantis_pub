@@ -1,0 +1,4 @@
+
+#This file is necessary if non-standard joint names are used. Standard naming convention is: joint_1, joint_2, ..., joint_N
+#This file should be loaded in a launch file.
+controller_joint_names: [J1_roll, J2_pitch, J3_roll, J4_pitch, J5_roll, J6_pitch, J7_roll, J8_pitch, J9_wrist]

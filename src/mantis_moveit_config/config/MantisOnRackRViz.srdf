@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="MantisOnRackRViz">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="Arm">
+        <link name="base_link" />
+        <link name="B1" />
+        <link name="B2" />
+        <link name="B3" />
+        <link name="B4" />
+        <link name="B5" />
+        <link name="B6" />
+        <link name="B7" />
+        <link name="B8" />
+        <joint name="J1_roll" />
+        <joint name="J2_pitch" />
+        <joint name="J3_roll" />
+        <joint name="J4_pitch" />
+        <joint name="J5_roll" />
+        <joint name="J6_pitch" />
+        <joint name="J7_roll" />
+        <joint name="J8_pitch" />
+    </group>
+    <group name="Gripper">
+        <link name="Palm" />
+        <link name="Proximal_L" />
+        <link name="Distal_L" />
+        <link name="Proximal_R" />
+        <link name="Distal_R" />
+    </group>
+    <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+    <end_effector name="gripper" parent_link="B8" group="Gripper" parent_group="Arm" />
+    <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
+    <passive_joint name="merlin_hinge" />
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="B1" link2="B2" reason="Adjacent" />
+    <disable_collisions link1="B1" link2="B3" reason="Never" />
+    <disable_collisions link1="B1" link2="B4" reason="Never" />
+    <disable_collisions link1="B1" link2="base_link" reason="Adjacent" />
+    <disable_collisions link1="B1" link2="express_rack" reason="Never" />
+    <disable_collisions link1="B1" link2="merlin_door" reason="Never" />
+    <disable_collisions link1="B2" link2="B3" reason="Adjacent" />
+    <disable_collisions link1="B2" link2="B4" reason="Never" />
+    <disable_collisions link1="B2" link2="base_link" reason="Never" />
+    <disable_collisions link1="B2" link2="express_rack" reason="Never" />
+    <disable_collisions link1="B2" link2="merlin_door" reason="Never" />
+    <disable_collisions link1="B3" link2="B4" reason="Adjacent" />
+    <disable_collisions link1="B3" link2="B5" reason="Never" />
+    <disable_collisions link1="B3" link2="B6" reason="Never" />
+    <disable_collisions link1="B3" link2="express_rack" reason="Never" />
+    <disable_collisions link1="B3" link2="merlin_door" reason="Never" />
+    <disable_collisions link1="B4" link2="B5" reason="Adjacent" />
+    <disable_collisions link1="B4" link2="B6" reason="Never" />
+    <disable_collisions link1="B4" link2="base_link" reason="Never" />
+    <disable_collisions link1="B4" link2="express_rack" reason="Never" />
+    <disable_collisions link1="B5" link2="B6" reason="Adjacent" />
+    <disable_collisions link1="B5" link2="B7" reason="Never" />
+    <disable_collisions link1="B5" link2="B8" reason="Never" />
+    <disable_collisions link1="B5" link2="express_rack" reason="Never" />
+    <disable_collisions link1="B6" link2="B7" reason="Adjacent" />
+    <disable_collisions link1="B6" link2="B8" reason="Never" />
+    <disable_collisions link1="B6" link2="express_rack" reason="Never" />
+    <disable_collisions link1="B7" link2="B8" reason="Adjacent" />
+    <disable_collisions link1="B7" link2="express_rack" reason="Never" />
+    <disable_collisions link1="B8" link2="express_rack" reason="Never" />
+    <disable_collisions link1="base_link" link2="express_rack" reason="Adjacent" />
+    <disable_collisions link1="base_link" link2="merlin_door" reason="Never" />
+    <disable_collisions link1="express_rack" link2="merlin_door" reason="Adjacent" />
+</robot>

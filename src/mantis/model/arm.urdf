@@ -1,0 +1,393 @@
+<?xml version="1.0"?>
+
+<robot name="MantisArm"
+       xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+
+<!-- Wrap the whole file up as a macro so that environment arguments can be used (in Joint 0)
+
+    env_base = The object that the arm base should be linked to (eg 'world')
+    origin = Position block specifying where the arm should be instantiated within an environment
+ -->
+<xacro:macro name="mantis_arm" params="env_base *origin">
+
+    <!-- ################################# -->
+    <!--        Xacro Initialization       -->
+    <!-- ################################# -->
+
+
+
+
+    <!-- ========PROPERTIES======= -->
+
+    <!-- xacro:property name="pi" value="3.1415926535" / -->
+
+    <!-- Damping and Friction values used in all joint definitions -->
+    <xacro:property name="damping_const" value="0.25" />
+    <xacro:property name="friction_const" value="0.25" />
+
+    <!-- Physical measurements of the components -->
+    <xacro:property name="arm_length" value="0.290" />
+    <xacro:property name="shoulder_length" value="${0.054+0.002}" />  <!-- measured to edge +2mm gap -->
+
+    <!-- Formal axis-to-axis arm segment lengths -->
+    <xacro:property name="L1" value="0.089" />
+    <xacro:property name="L2" value="${arm_length}" />
+    <xacro:property name="L3" value="${shoulder_length}" />
+    <xacro:property name="L4" value="${arm_length}" />
+    <xacro:property name="L5" value="${shoulder_length}" />
+    <xacro:property name="L6" value="${arm_length}" />
+    <xacro:property name="L7" value="${shoulder_length}" />
+    <xacro:property name="L8" value="0" />
+
+    <!-- Alpha angles (radians) from the DH parameters of the arm -->
+    <xacro:property name="a1" value=" 0" />
+    <xacro:property name="a2" value="-${pi/2}" />
+    <xacro:property name="a3" value=" ${pi/2}" />
+    <xacro:property name="a4" value="-${pi/2}" />
+    <xacro:property name="a5" value=" ${pi/2}" />
+    <xacro:property name="a6" value="-${pi/2}" />
+    <xacro:property name="a7" value=" ${pi/2}" />
+    <xacro:property name="a8" value="-${pi/2}" />
+
+    <!-- d lengths from the DH parameters of the arm -->
+    <xacro:property name="d1" value=" ${L1}" />
+    <xacro:property name="d2" value=" 0" />
+    <xacro:property name="d3" value=" ${L2}" />
+    <xacro:property name="d4" value=" ${L3}" />
+    <xacro:property name="d5" value=" ${L4}" />
+    <xacro:property name="d6" value="-${L5}" />
+    <xacro:property name="d7" value=" ${L6}" />
+    <xacro:property name="d8" value=" ${L7}" />
+    <!-- In Modified DH Parameters, the d values are expressed as distances along the Z axis of the ith joint
+                 But the joint offset vectors defined below are defined from the (i-1) axes. So the d values
+            are not applied with consistent signage or along the same axes.
+    -->
+
+
+    <!-- Base Height: Height of the fixed base of the arm. -->
+    <xacro:property name="base_offset" value="0 0 ${d1+0.04}" />
+
+    <!-- J2 Properties (Pitch) : The xyz and rpy needed to set the relative location of the child(B2)
+            B1_offset = location in B1 coordinates to the B2 origin
+            B2_alignment = rotations in B2 coordinates to align B2
+    -->
+    <xacro:property name="B1_offset" value="0 0 ${d2}" />
+    <xacro:property name="B2_alignment" value="${a2} 0 0" />
+
+    <!-- J3 Properties (Roll) -->
+    <xacro:property name="B2_offset" value="0 -${d3} 0" /> <!-- negative to account for the down-facing axis of B2 -->
+    <xacro:property name="B3_alignment" value="${a3} 0 0" />
+
+    <!-- J4 Properties (Pitch) -->
+    <xacro:property name="B3_offset" value="0 ${d4} 0" />
+    <xacro:property name="B4_alignment" value="${a4} 0 0" />
+
+    <!-- J5 Properties (Roll) -->
+    <xacro:property name="B4_offset" value="0 -${d5} 0" />
+    <xacro:property name="B5_alignment" value="${a5} 0 0" />
+
+    <!-- J6 Properties (Pitch) -->
+    <xacro:property name="B5_offset" value="0 ${d6} 0" />
+    <xacro:property name="B6_alignment" value="${a6} 0 0" />
+
+    <!-- J7 Properties (Roll) -->
+    <xacro:property name="B6_offset" value="0 -${d7} 0" />
+    <xacro:property name="B7_alignment" value="${a7} 0 0" />
+
+    <!-- J8 Properties (Pitch) -->
+    <xacro:property name="B7_offset" value="0 ${d8} 0" />
+    <xacro:property name="B8_alignment" value="${a8} 0 0" />
+
+    <!-- Wrist Properties (Roll) -->
+    <xacro:property name="B8_offset" value="0 -0.067 0" />
+
+    <!-- Plate Properties (Fixed) -->
+    <xacro:property name="palm_offset" value="-0.03803 -0.00128 0.28085" />
+    <xacro:property name="palm_alignment" value="${pi/2} 0 0" />
+
+
+    <xacro:property name="knuckle_r_offset" value="-0.04334 0 0.071569" />
+    <xacro:property name="knuckle_l_offset" value=" 0.04334 0 0.071569" />
+    <xacro:property name="knuckle_alignment" value="-${pi/2} 0 0" />
+
+    <xacro:property name="finger_r_offset" value=" 0 -0.06789 0 " />
+    <xacro:property name="finger_l_offset" value=" 0 -0.06789 0 " />
+    <xacro:property name="finger_alignment" value="0 0 0" />
+
+
+    <!-- ################################# -->
+
+    <!-- ========MACROS======= -->
+
+    <!-- Load Element
+            This will load a body element into the model.
+
+            element_name = The reference label for the element
+            mesh         = The COLLADA (.dae) file describing the element's geometry
+            *inertial_tensor = An <inertial></inertial> xml block defined for each element
+    -->
+    <xacro:macro name="load_element" params="element_name mesh *inertial_tensor">
+        <link name= "${element_name}">
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="package://mantis/meshes/${mesh}" />
+                </geometry>
+            </visual>
+
+            <xacro:insert_block name="inertial_tensor"/>
+
+        </link>
+    </xacro:macro>
+
+
+    <xacro:macro name="load_solid_element" params="element_name mesh *inertial_tensor">
+        <link name= "${element_name}">
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="package://mantis/meshes/${mesh}" />
+                </geometry>
+            </visual>
+
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="package://mantis/meshes/${mesh}" />
+                </geometry>
+            </collision>
+
+            <xacro:insert_block name="inertial_tensor"/>
+
+        </link>
+    </xacro:macro>
+
+
+    <!-- Create a revolute joint between two elements -->
+    <xacro:macro name="join_elements" params="joint_name parent child offset alignment">
+        <joint name="${joint_name}" type="continuous" >
+            <parent link="${parent}" />
+            <child link="${child}" />
+            <origin xyz="${offset}" rpy="${alignment}" />
+            <axis xyz="0 0 1">
+                <dynamics damping="${damping_const}" friction="${friction_const}"/>
+            </axis>
+            <limit velocity="10" effort="30.0" />
+        </joint>
+    </xacro:macro>
+
+
+<!--     Inertia
+        This loads in the inertial values of the arm and shoulder
+        mass: kg
+        inertials: kg*m^2
+         -->
+    <xacro:macro name="arm_inertia" > <!-- B2 Values, close to B4 & B6 -->
+        <inertial>
+            <mass value="0.383"/>
+            <inertia ixx="0.008240" iyy="0.000117" izz="0.008234" ixy="0" iyz="0" ixz="0" />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="shoulder_inertia" > <!-- B3 Values, close to B5 & B7 -->
+        <inertial>
+            <mass value="0.320"/>
+            <inertia ixx="0.000272" iyy="0.000101" izz="0.000303" ixy="0" iyz="0" ixz="0" />
+        </inertial>
+    </xacro:macro>
+
+
+
+
+
+
+
+    <!-- ################################# -->
+    <!--              Links                -->
+    <!-- ################################# -->
+
+    <!-- ======== Fixed Base ======== -->
+    <!-- These inertial values are rough estimates -->
+
+    <xacro:load_element element_name="base_link" mesh="base.dae">
+        <inertial>
+            <mass value="0.400"/>
+            <inertia ixx="0.08000" iyy="0.05000" izz="0.06000" ixy="0.001" iyz="0.002" ixz="0.001" />
+        </inertial>
+    </xacro:load_element>
+
+    <!-- ======== Body Element 1 ======== -->
+    <!--            Short Arm             -->
+    <!-- These inertial values are derived from solidworks -->
+    <xacro:load_element element_name="B1" mesh="B1.dae">
+        <inertial>
+            <mass value="0.175"/>
+            <inertia ixx="0.000586" iyy="0.000579" izz="0.000068" ixy="0" iyz="0" ixz="0" />
+        </inertial>
+    </xacro:load_element>
+
+    <!-- ======== Body Element 2 ======== -->
+    <!--               Arm                -->
+    <xacro:load_element element_name="B2" mesh="B2.dae">
+        <xacro:arm_inertia/>
+    </xacro:load_element>
+
+    <!-- ======== Body Element 3 ======== -->
+    <!--             Shoulder             -->
+    <xacro:load_element element_name="B3" mesh="B3.dae">
+        <xacro:shoulder_inertia/>
+    </xacro:load_element>
+
+    <!-- ======== Body Element 4 ======== -->
+    <!--               Arm                -->
+    <xacro:load_element element_name="B4" mesh="B4.dae">
+        <xacro:arm_inertia/>
+    </xacro:load_element>
+
+    <!-- ======== Body Element 5 ======== -->
+    <!--             Shoulder             -->
+    <xacro:load_element element_name="B5" mesh="B5.dae">
+        <xacro:shoulder_inertia/>
+    </xacro:load_element>
+
+    <!-- ======== Body Element 6 ======== -->
+    <!--               Arm                -->
+    <xacro:load_element element_name="B6" mesh="B6.dae">
+        <xacro:arm_inertia/>
+    </xacro:load_element>
+
+    <!-- ======== Body Element 7 ======== -->
+    <!--             Shoulder             -->
+    <xacro:load_element element_name="B7" mesh="B7.dae">
+        <xacro:shoulder_inertia/>
+    </xacro:load_element>
+
+    <!-- ======== Body Element 8 ======== -->
+    <!--              Wrist               -->
+    <!-- These inertial values are estimates -->
+    <xacro:load_element element_name="B8" mesh="B8.dae">
+        <inertial>
+            <mass value="0.150"/>
+            <inertia ixx="0.000586" iyy="0.000068" izz="0.000579" ixy="0" iyz="0" ixz="0" />
+        </inertial>
+    </xacro:load_element>
+
+
+    <!-- ======== Body Element 9 ======== -->
+    <!--              Palm                -->
+    <!-- These inertial values are estimates -->
+    <xacro:load_solid_element element_name="Palm" mesh="gripper/palm.dae">
+        <inertial>
+            <mass value="0.400"/>
+            <inertia ixx="0.5000" iyy="0.5000" izz="0.6000" ixy="0.000" iyz="0.00" ixz="0.00" />
+        </inertial>
+    </xacro:load_solid_element>
+
+    <!-- ======== Body Element 10 ======== -->
+    <!--              Proximal L                -->
+    <!-- These inertial values are estimates -->
+    <xacro:load_solid_element element_name="Proximal_L" mesh="gripper/proximal_L.dae">
+        <inertial>
+            <mass value="0.010"/>
+            <inertia ixx="0.0006" iyy="0.0002" izz="0.0006" ixy="0.0" iyz="0.0"  ixz="0.0" />
+        </inertial>
+    </xacro:load_solid_element>
+
+    <!-- ======== Body Element 11 ======== -->
+    <!--              Proximal R                -->
+    <!-- These inertial values are estimates -->
+    <xacro:load_solid_element element_name="Proximal_R" mesh="gripper/proximal_R.dae">
+        <inertial>
+            <mass value="0.010"/>
+            <inertia ixx="0.0006" iyy="0.0002" izz="0.0006" ixy="0.0" iyz="0.0"  ixz="0.0" />
+        </inertial>
+    </xacro:load_solid_element>
+
+    <!-- ======== Body Element 11 ======== -->
+    <!--              Distal L               -->
+    <!-- These inertial values are estimates -->
+    <xacro:load_solid_element element_name="Distal_L" mesh="gripper/distal_L.dae">
+        <inertial>
+            <mass value="0.010"/>
+            <inertia ixx="0.0006" iyy="0.0002" izz="0.0006" ixy="0.0" iyz="0.0"  ixz="0.0" />
+        </inertial>
+    </xacro:load_solid_element>
+
+    <!-- ======== Body Element 11 ======== -->
+    <!--              Distal R                -->
+    <!-- These inertial values are estimates -->
+    <xacro:load_solid_element element_name="Distal_R" mesh="gripper/distal_R.dae">
+        <inertial>
+            <mass value="0.010"/>
+            <inertia ixx="0.0006" iyy="0.0002" izz="0.0006" ixy="0.0" iyz="0.0"  ixz="0.0" />
+        </inertial>
+    </xacro:load_solid_element>
+
+
+    <!-- ################################# -->
+
+
+
+
+
+
+    <!-- ################################# -->
+    <!--             Joints                -->
+    <!-- ################################# -->
+
+
+    <!-- ======== Joint 0 (fixed) ========
+        This joint places the arm within the global environment
+        using this file's arguments env_base and origin
+    -->
+    <joint name="anchor" type="fixed">
+        <xacro:insert_block name="origin" />
+        <parent link="${env_base}" />
+        <child link="base_link" />
+    </joint>
+
+
+    <!-- ======== Joint 1 (roll) ======== -->
+    <xacro:join_elements joint_name="J1_roll"  parent="base_link" child="B1" offset="${base_offset}" alignment="0 0 0" />
+
+    <!-- ======== Joint 2 (pitch) ======== -->
+    <xacro:join_elements joint_name="J2_pitch" parent="B1" child="B2" offset="${B1_offset}" alignment="${B2_alignment}" />
+
+    <!-- ======== Joint 3 (roll)  ======== -->
+    <xacro:join_elements joint_name="J3_roll"  parent="B2" child="B3" offset="${B2_offset}" alignment="${B3_alignment}" />
+
+    <!-- ======== Joint 4 (pitch) ======== -->
+    <xacro:join_elements joint_name="J4_pitch" parent="B3" child="B4" offset="${B3_offset}" alignment="${B4_alignment}" />
+
+    <!-- ======== Joint 5 (roll)  ======== -->
+    <xacro:join_elements joint_name="J5_roll"  parent="B4" child="B5" offset="${B4_offset}" alignment="${B5_alignment}" />
+
+    <!-- ======== Joint 6 (pitch) ======== -->
+    <xacro:join_elements joint_name="J6_pitch" parent="B5" child="B6" offset="${B5_offset}" alignment="${B6_alignment}" />
+
+    <!-- ======== Joint 7 (roll) ======== -->
+    <xacro:join_elements joint_name="J7_roll"  parent="B6" child="B7" offset="${B6_offset}" alignment="${B7_alignment}" />
+
+    <!-- ======== Joint 8 (pitch) ======== -->
+    <xacro:join_elements joint_name="J8_pitch" parent="B7" child="B8" offset="${B7_offset}" alignment="${B8_alignment}" />
+
+    <!-- ======== Joint 9 (wrist) ======== -->
+    <xacro:join_elements joint_name="J9_wrist" parent="B8" child="Palm" offset="${B8_offset}" alignment="${palm_alignment}" />
+
+    <!-- ======== Joint 9 (wrist) ======== -->
+    <xacro:join_elements joint_name="J1_L_wrist" parent="Palm" child="Proximal_L" offset="${knuckle_l_offset}" alignment="${knuckle_alignment}" />
+
+    <!-- ======== Joint 9 (wrist) ======== -->
+    <xacro:join_elements joint_name="J1_R_wrist" parent="Palm" child="Proximal_R" offset="${knuckle_r_offset}" alignment="${knuckle_alignment}" />
+
+    <!-- ======== Joint 9 (wrist) ======== -->
+    <xacro:join_elements joint_name="J2_L_wrist" parent="Proximal_L" child="Distal_L" offset="${finger_l_offset}" alignment="${finger_alignment}" />
+
+    <!-- ======== Joint 9 (wrist) ======== -->
+    <xacro:join_elements joint_name="J2_R_wrist" parent="Proximal_R" child="Distal_R" offset="${finger_r_offset}" alignment="${finger_alignment}" />
+
+
+
+</xacro:macro>
+</robot>

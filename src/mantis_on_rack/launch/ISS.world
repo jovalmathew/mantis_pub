@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<!-- SDF file used for gazebo -->
+<sdf version="1.4"> <!-- Check SDF 1.4 documentation online -->
+    <world name="default">
+        <include>
+            <uri>model://ground_plane</uri>
+        </include>
+        <include>
+            <uri>model://sun</uri>
+        </include>
+
+        <!-- Just setting the gravity to 0,
+            everything else is the same as default for now-->
+        <physics name="zero_g" type="ode">
+            <real_time_update_rate>1000</real_time_update_rate>
+            <max_step_size>0.0001</max_step_size>
+            <gravity>0 0 0</gravity>
+            <ode>
+                <solver>
+                    <type>quick</type>
+                    <iters>50</iters>
+                </solver>
+                <constraints>
+                    <contact_max_correcting_vel>100</contact_max_correcting_vel> <!-- Required contact velocity between collision objects for full penetration (no bounce) -->
+                    <!-- contact_surface_layer>0.01</contact_surface_layer -->  <!-- Depth of penetration allowable between two collision objects -->
+                </constraints>
+            </ode>
+        </physics>
+
+
+    </world>
+</sdf>

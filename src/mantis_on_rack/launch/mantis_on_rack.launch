@@ -1,0 +1,52 @@
+<launch>
+
+	<arg name="robot_xacro" default="$(find mantis_on_rack)/urdf/mantis_on_rack_robot.urdf.xacro"/>
+
+	<arg name="robot_name" default="mantis_on_rack"/>
+    <arg name="xacro_arguments" default="sensor_on_table:=false"/>
+
+    <arg name="x" default="0"/>
+    <arg name="y" default="0"/>
+    <arg name="z" default="0"/>
+    <arg name="gazebo_world_file" default="worlds/empty.world"/>
+	<arg name="load_joint_state_publisher" default="false"/>
+    <arg name="joint_state_publisher_topic" default="mantis/joint_control"/>
+	<arg name="load_robot_state_publisher" default="false"/>
+	<arg name="joint_states_topic" default="mantis/joint_state"/>
+    <arg name="extra_gazebo_args" default=""/>
+
+	#####################################
+	# Load robot_description on parameter server
+	#####################################
+	<param name="robot_description" command= "$(find xacro)/xacro --inorder $(arg robot_xacro)" />
+
+	#####################################
+	# Launch gazebo
+	#####################################
+	<!-- Load the environment background -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find mantis_on_rack)/launch/ISS.world"/>
+	</include>
+
+	<!-- Spawn a robot into Gazebo -->
+
+	<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+        args="-param robot_description -urdf -x $(arg x) -y $(arg y) -z $(arg z) -model $(arg robot_name)"/>
+
+
+	<!-- publish joint values  -->
+	<node name="joint_state_publisher"
+		  pkg="joint_state_publisher"
+		  type="joint_state_publisher" >
+	    <param name="/use_gui" value="true"/>
+	</node>
+
+
+	<!-- ros_control mantis launch file -->
+	<include file="$(find mantis)/launch/arm_control.launch" />
+
+	<!-- ros control rack control launch file  -->
+	<include file="$(find mantis_on_rack)/launch/rack_control.launch" />
+
+
+</launch>

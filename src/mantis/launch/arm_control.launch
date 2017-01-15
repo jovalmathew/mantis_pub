@@ -1,0 +1,33 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find mantis)/model/arm_control_trajectory.yaml" command="load"/>
+
+
+  <!-- Load the controllers for each actuation point-->
+  <node name="controller_spawner" pkg="controller_manager"
+        type="spawner"
+        respawn="false"
+        output="screen"
+        ns="/mantis"
+        args="joint_state_controller arm_controller" >
+   <!-- args="joint_state_controller J1_control J2_control J3_control J4_control J5_control J6_control J7_control J8_control J9_control" >     -->
+  </node>
+
+  <!-- node pkg="industrial_robot_client"
+        type="joint_trajectory_action"
+        name="joint_trajectory_action"
+        ns="/mantis/arm_controller"/ -->
+
+  <!-- Convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher"
+        respawn="false"
+        output="screen">
+
+        <remap from="/joint_states" to="/mantis/joint_states" />
+  </node>
+
+
+</launch>

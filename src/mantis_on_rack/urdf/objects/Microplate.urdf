@@ -1,0 +1,25 @@
+<robot name="Microplate">
+    <link name="microplate">
+        <inertial>
+            <mass value=".250" />
+            <inertia ixx="0.257343821996639" ixy="6.2983660131078E-05" ixz="-3.19177822902163E-05" iyy="0.5174970781523" iyz="-8.19713905978223E-05" izz="01.16131215859239" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://mantis_on_rack/meshes/objects/Microplate_Fake.STL" />
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://mantis_on_rack/meshes/objects/Microplate_Fake.STL" />
+            </geometry>
+        </collision>
+         <gravity>0</gravity>
+    </link>
+  <gazebo reference="microplate">
+     <gravity>0</gravity>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+</robot>

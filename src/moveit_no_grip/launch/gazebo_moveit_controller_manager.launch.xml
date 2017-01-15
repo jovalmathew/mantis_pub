@@ -1,0 +1,16 @@
+<launch>
+
+    <param name="moveit_manage_controllers" value="true"/>
+
+    <!-- Load a naming wrapper to identify the non-standard joint names -->
+    <rosparam command="load" file="$(find moveit_no_grip)/config/joint_names.yaml"/>
+
+    <!-- Load a controller list which will let moveit communicate with the robot interface node -->
+    <param name="moveit_controller_manager" value="moveit_simple_controller_manager/MoveItSimpleControllerManager"/>
+    <!-- rosparam ns="mantis" file="$(find moveit_no_grip)/config/controllers.yaml" command="load"/ -->
+    <rosparam file="$(find moveit_no_grip)/config/controllers.yaml"/>
+    <param name="use_controller_manager" value="true"/>
+    <param name="trajectory_execution/execution_duration_monitoring" value="true"/>
+
+
+</launch>

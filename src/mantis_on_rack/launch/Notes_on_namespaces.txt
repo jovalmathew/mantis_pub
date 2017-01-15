@@ -1,0 +1,14 @@
+Some things to note about the setup of the rack control launch file.
+
+We use the mantis namespace at the top, because the ROS control plugin that we included in the arm URDF file uses mantis as its namespace. 
+
+When looking at the topics that are initialized by ROS, we see that some are /mantis/mantis/... and others are /mantis/express_rack/...
+
+This is due to the fact that mantis/ is the overarching robotNamespace, and mantis/mantis refers to the controllers set up in the mantis YAML file. Similarly, mantis/express_rack refers to the tray controller set up in the express_rack YAML file. 
+
+The top level name mantis also applies to the /joint_states topic. 
+In an ideal world, the overarching namespace would be something like mantis_on_rack, and topics would then be:
+/mantis_on_rack/mantis/...
+/mantis_on_rack/express_rack/...
+/mantis_on_rack/joint_states 
+

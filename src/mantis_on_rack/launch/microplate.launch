@@ -1,0 +1,17 @@
+<launch>
+
+	<arg name="plate_urdf" default="$(find mantis_on_rack)/urdf/objects/Microplate.urdf"/>
+
+	<arg name="name" default="merlin_plate"/>
+
+    <arg name="x" default="0"/>
+    <arg name="y" default="0"/>
+    <arg name="z" default="1.5"/>
+
+
+    <arg name="frame" default="world"/>
+
+	<node name="microplate_spawner" pkg="gazebo_ros" type="spawn_model"
+        args=" -file $(arg plate_urdf) -urdf -x $(arg x) -y $(arg y) -z $(arg z) -model $(arg name)" output="screen"/>
+
+</launch>

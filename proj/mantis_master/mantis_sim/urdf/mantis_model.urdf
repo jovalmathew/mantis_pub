@@ -1,0 +1,359 @@
+<?xml version="1.0"?>
+<robot name="Mantis">
+
+<!-- ======================= -->
+<!-- ======================= -->
+<!-- LINKS -->
+<!-- ======================= -->
+<!-- ======================= -->
+
+<!-- ======================= -->
+<!-- Fixed Base  -->
+<!-- ======================= -->
+	<link name="base_link">
+		<visual>
+			<origin rpy="1.57 0 0" xyz="-0.02 0.02 0"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-002.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".0565"/>
+			<inertia ixx="0.00006" ixy="0.0" ixz="0.0" iyy="0.00002" iyz="0.0" izz="0.00006"/>
+		</inertial>
+	</link>
+
+<!-- ======================= -->
+<!-- Housing for the First Joint  -->
+<!-- ======================= -->
+	<link name="joint_one_housing_A">
+		<visual>
+			<origin rpy="3.14159 -1.57 -1.57" xyz="0.02 0.02 0.05058"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-020.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="0.0469"/>
+			<inertia ixx="0.0000139" ixy="0.0000042" ixz="0.0" iyy="0.0000165" iyz="0.0" izz="0.0000161"/>
+		</inertial>
+	</link>
+
+	<link name="joint_one_housing_B">
+		<visual>
+			<origin rpy="3.14159 -1.57 1.57" xyz="0.0 -0.02 0.05778"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-021.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="0.0206"/>
+			<inertia ixx="0.0000025" ixy="0.0" ixz="0.0" iyy="0.0000055" iyz="0.0" izz="0.0000031"/>
+		</inertial>
+	</link>
+
+	<link name="joint_one_elbow">
+		<visual>
+			<origin rpy="0 1.57 1.57" xyz="0.02 -0.02 0.02395"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-022.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="0.0386"/>
+			<inertia ixx="0.0000116" ixy="0" ixz="0.0" iyy="0.0000115" iyz="0.0" izz="0.0000094"/>
+		</inertial>
+	</link>
+
+
+
+<!-- ======================= -->
+<!-- Link 1 -->
+<!-- ======================= -->
+	<link name="link_one_base">
+		<visual>
+			<origin rpy="1.57 0 3.14159" xyz=".02 -0.02 0.02395"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-027.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".014734"/>
+			<inertia ixx="0.0000019" ixy="0" ixz="0.0" iyy="0.000004" iyz="0.0" izz="0.0000021"/>
+		</inertial>
+	</link> 
+
+	<link name="link_one_main">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0.14473"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-820.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".136373"/>
+			<inertia ixx="0.000847" ixy="0" ixz="0.0" iyy="0.000853" iyz="0.0" izz="0.000084"/>
+		</inertial>
+	</link> 
+
+
+
+<!-- ======================= -->
+<!-- Housing for Joint 2  -->
+<!-- ======================= -->
+
+
+	<link name="joint_two_housing_A">
+		<visual>
+			<origin rpy="1.57 0 1.57" xyz="0 0 0.26295"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-803_A.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".054044"/>
+			<inertia ixx="0.0000206" ixy="0" ixz="0.0" iyy="0.0000226" iyz="0.0" izz="0.0000222"/>
+		</inertial>
+	</link> 
+
+	<link name="joint_two_housing_B">
+		<visual>
+			<origin rpy="1.57 0 1.57" xyz="0.0 0.0 -0.04"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-803_B.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".04209"/>
+			<inertia ixx="0.0000128" ixy="0" ixz="0.0" iyy="0.0000168" iyz="0.0" izz="0.0000136"/>
+		</inertial>
+	</link> 
+
+<!-- ======================= -->
+<!-- Link 2  -->
+<!-- ======================= -->
+	<link name="link_two_main">
+		<visual>
+			<origin rpy="1.57 0 1.57" xyz="-0.04 0 0.1214"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-821.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".12065"/>
+			<inertia ixx="0.00057" ixy="0" ixz="0.0" iyy="0.00008" iyz="0.0" izz="0.00056"/>
+		</inertial>
+	</link> 
+
+<!-- ======================= -->
+<!-- Housing for Joint 3  -->
+<!-- ======================= -->
+	<link name="joint_three_housing_A">
+		<visual>
+			<origin rpy="1.57 0 0" xyz="-0.04 0 0.2188"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-803_A.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".280553"/>
+			<inertia ixx="0.000333" ixy="0" ixz="0.0" iyy="0.000044" iyz="0.000017" izz="0.000328"/>
+		</inertial>
+	</link> 
+
+	<link name="joint_three_housing_B">
+		<visual>
+			<origin rpy="1.57 0 0" xyz="0 0 -0.04"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-803_B.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".280553"/>
+			<inertia ixx="0.000333" ixy="0" ixz="0.0" iyy="0.000044" iyz="0.000017" izz="0.000328"/>
+		</inertial>
+	</link> 
+
+
+<!-- ======================= -->
+<!-- Link 3  -->
+<!-- ======================= -->
+
+	<link name="link_three_main">
+		<visual>
+			<origin rpy="1.57 0 0" xyz="0 0.04 0.1214"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-822.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="2.700308"/>
+			<inertia ixx="0.012688" ixy="0" ixz="0.0" iyy="0.000691" iyz="0.000017" izz="0.012681"/>
+		</inertial>
+	</link> 
+
+
+<!-- ======================= -->
+<!-- Housing for Wrist Joint  -->
+<!-- ======================= -->
+
+	<link name="wrist_housing_A">
+		<visual>
+			<origin rpy="1.57 0 1.57" xyz="0 0.04 0.2188"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-803_A.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="2.700308"/>
+			<inertia ixx="0.012688" ixy="0" ixz="0.0" iyy="0.000691" iyz="0.000017" izz="0.012681"/>
+		</inertial>
+	</link> 
+
+	<link name="wrist_housing_B">
+		<visual>
+			<origin rpy="0 -1.57 -1.57" xyz="-0.06 -0.02 -0.03"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-051.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".280553"/>
+			<inertia ixx="0.000333" ixy="0" ixz="0.0" iyy="0.000044" iyz="0.000017" izz="0.000328"/>
+		</inertial>
+	</link> 
+
+	<link name="wrist_attach_point">
+		<visual>
+			<origin rpy="-1.57 0 0" xyz="-0.06 -0.02 -0.03"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-023.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".0184764"/>
+			<inertia ixx="0.0000052" ixy="0" ixz="0.0" iyy="0.0000084" iyz="0.000017" izz="0.0000052"/>
+		</inertial>
+	</link> 
+
+<!-- ======================= -->
+<!-- ======================= -->
+<!-- JOINTS -->
+<!-- ======================= -->
+<!-- ======================= -->
+
+<!-- ======================= -->
+<!-- Fixed Base -->
+<!-- ======================= -->
+<joint name="base_to_joint_housing" type="fixed">
+	<parent link="base_link"/>
+	<child link="joint_one_housing_A"/>
+</joint>
+
+<joint name="joint_one" type="fixed">
+	<parent link="joint_one_housing_A"/>
+	<child link="joint_one_housing_B"/>
+</joint>
+
+<!-- ======================= -->
+<!-- Elbow 1 -->
+<!-- ======================= -->
+<joint name="elbow_1" type="revolute">
+	<axis xyz="1 0 0"/>
+	<limit effort="1000.0" lower="-1.5" upper="1.5" velocity="0.25"/>
+	<origin rpy="0 0 0" xyz="0 0 0.08428"/>
+	<parent link="joint_one_housing_A"/>
+	<child link="joint_one_elbow"/>
+</joint>
+
+<!-- ======================= -->
+<!-- Link 1 -->
+<!-- ======================= -->
+<joint name="link_1_base_to_elbow_1" type="fixed">
+	<parent link="joint_one_elbow"/>
+	<child link="link_one_base"/>
+</joint>
+
+<joint name="link_1_A" type="fixed">
+	<parent link="link_one_base"/>
+	<child link="link_one_main"/>
+</joint>
+
+<joint name="link_1_to_elbow_2" type="fixed">
+	<parent link="link_one_main"/>
+	<child link="joint_two_housing_A"/>
+</joint>
+
+
+<!-- ======================= -->
+<!-- Elbow 2 -->
+<!-- ======================= -->
+
+
+<joint name="elbow_2" type="revolute">
+	<axis xyz="1 0 0"/>
+	<limit effort="1000.0" lower="-1.5" upper="1.5" velocity="0.25"/>
+	<origin rpy="0 0 0" xyz="0 0 0.295885"/>
+	<parent link="joint_two_housing_A"/>
+	<child link="joint_two_housing_B"/>
+</joint>
+
+
+<!-- ======================= -->
+<!-- Link 2 -->
+<!-- ======================= -->
+
+<joint name="elbow_2_to_link_2" type="fixed">
+	<parent link="joint_two_housing_B"/>
+	<child link="link_two_main"/>
+</joint>
+
+
+<joint name="link_2_to_elbow_3" type="fixed">
+	<parent link="link_two_main"/>
+	<child link="joint_three_housing_A"/>
+</joint>
+
+<!-- ======================= -->
+<!-- Elbow 3 -->
+<!-- ======================= -->
+<joint name="elbow_3" type="revolute">
+	<axis xyz="0 1 0"/>
+	<limit effort="1000.0" lower="-1.5" upper="1.5" velocity="0.25"/>
+	<origin rpy="0 0 0" xyz="-0.04 0 0.2588"/>
+	<parent link="joint_three_housing_A"/>
+	<child link="joint_three_housing_B"/>
+</joint>
+
+<!-- ======================= -->
+<!-- Link 3 -->
+<!-- ======================= -->
+<joint name="elbow_3_to_link_3" type="fixed">
+	<parent link="joint_three_housing_B"/>
+	<child link="link_three_main"/>
+</joint>
+
+<joint name="link_3_to_wrist" type="fixed">
+	<parent link="link_three_main"/>
+	<child link="wrist_housing_A"/>
+</joint>
+
+<!-- ======================= -->
+<!-- Wrist -->
+<!-- ======================= -->
+
+
+<joint name="wrist" type="revolute">
+	<axis xyz="1 0 0"/>
+	<limit effort="1000.0" lower="-1.5" upper="1.5" velocity="0.25"/>
+	<origin rpy="-1.57 0 0" xyz="0.00 0.04 0.2588"/>
+	<parent link="wrist_housing_A"/>
+	<child link="wrist_housing_B"/>
+</joint>
+
+<joint name="wrist_attachment_joint" type="fixed">
+	<parent link="wrist_housing_B"/>
+	<child link="wrist_attach_point"/>
+</joint>
+
+</robot>

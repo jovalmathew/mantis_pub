@@ -1,0 +1,8 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: mantis
+    relative_path: model/arm_gazebo_default.urdf
+  SRDF:
+    relative_path: config/defaultMantis.srdf
+  CONFIG:
+    generated_timestamp: 1481140170

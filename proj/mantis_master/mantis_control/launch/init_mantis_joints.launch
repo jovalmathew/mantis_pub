@@ -1,0 +1,8 @@
+<launch>
+    ########################################
+    # Load arm joint and gripper joint names
+    ########################################
+    <arg name="names_config_file" default="$(find mantis_control)/config/MantisJoints.yaml"/>
+
+    <rosparam command="load" file="$(arg names_config_file)"/>
+</launch>

@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+
+
+<robot name="mantis"
+       xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<!-- Define the gazebo-compatible arm as a MACRO in order to pass in environment parameters
+    env_base = The object that the arm base should be linked to (eg 'world')
+    origin = Position block specifying where the arm should be instantiated within an environment
+-->
+<xacro:macro name="mantis_gazebo" params="env_base *origin">
+
+    <!-- Include the base model here before adding gazebo-specific blocks -->
+    <!-- This include simply defines a macro for defining an arm -->
+    <xacro:include filename="$(find mantis)/model/arm.urdf" />
+    <!-- Call the arm definition with a given base and origin -->
+    <xacro:mantis_arm env_base="${env_base}" >
+        <xacro:insert_block name="origin" />
+    </xacro:mantis_arm>
+
+
+
+    <!-- ################################# -->
+    <!--             PLUGINS               -->
+    <!-- ################################# -->
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/mantis</robotNamespace>
+        </plugin>
+    </gazebo>
+
+    <!-- ################################# -->
+
+    <!-- Create Transmission
+            This will create a basic transmission element for a given joint in the urdf model.
+
+            joint_name = The name of the joint for which to create a transmission.
+                            This must be pre-defined in the urdf file included above.
+    -->
+    <xacro:macro name="create_transmission" params="joint_name">
+        <transmission name="${joint_name}_transmission">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${joint_name}">
+                <hardwareInterface>EffortJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${joint_name}_motor">
+                <hardwareInterface>EffortJointInterface</hardwareInterface>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+
+
+    <!-- Create a transmission for each joint in the urdf model-->
+    <xacro:create_transmission joint_name="J1_roll" />
+    <xacro:create_transmission joint_name="J2_pitch" />
+    <xacro:create_transmission joint_name="J3_roll" />
+    <xacro:create_transmission joint_name="J4_pitch" />
+    <xacro:create_transmission joint_name="J5_roll" />
+    <xacro:create_transmission joint_name="J6_pitch" />
+    <xacro:create_transmission joint_name="J7_roll" />
+    <xacro:create_transmission joint_name="J8_pitch" />
+    <xacro:create_transmission joint_name="J9_wrist" />
+    
+    <xacro:create_transmission joint_name="J1_L_wrist" />
+    <xacro:create_transmission joint_name="J1_R_wrist" />
+
+
+
+    <!-- Friction
+        Detailed description needed-->
+
+    <xacro:macro name="default_material">
+        <implicitSpringDamper>1</implicitSpringDamper>
+        <mu1>100000</mu1>
+        <mu2>100000</mu2>
+        <kp>100.0</kp>
+        <kd>0.01</kd>
+    </xacro:macro>
+
+
+
+    <!-- ################################# -->
+    <!--           Materials               -->
+    <!-- ################################# -->
+    <gazebo reference="base_link">
+        <material>
+            Gazebo/Black
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <gazebo reference="B1">
+        <material>
+            Gazebo/DarkGrey
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <gazebo reference="B2">
+        <material>
+            Gazebo/Grey
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <gazebo reference="B3">
+        <material>
+            Gazebo/DarkGrey
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <gazebo reference="B4">
+        <material>
+            Gazebo/Grey
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <gazebo reference="B5">
+        <material>
+            Gazebo/DarkGrey
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <gazebo reference="B6">
+        <material>
+            Gazebo/Grey
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <gazebo reference="B7">
+        <material>
+            Gazebo/DarkGrey
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <gazebo reference="B8">
+        <material>
+            Gazebo/Grey
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <gazebo reference="Hand">
+        <material>
+            Gazebo/SkyBlue
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <gazebo reference="Plate">
+        <material>
+            Gazebo/Turquoise
+        </material>
+        <xacro:default_material/>
+    </gazebo>
+
+    <!-- ################################# -->
+</xacro:macro>
+</robot>
+
+
+

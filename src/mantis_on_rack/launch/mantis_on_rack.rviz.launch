@@ -1,0 +1,29 @@
+<launch>
+    <arg name="model" default="mantis_on_rack_robot.urdf.xacro" />
+    <arg name="gui" default="true" />
+
+    <!-- Load model file, calling the xacro program in order to parse all xacro syntax -->
+    <param name="robot_description"
+           command="$(find xacro)/xacro --inorder '$(find mantis_on_rack)/urdf/$(arg model)'" />
+    <param name="use_gui" value="$(arg gui)"/>
+
+
+<!-- Start 3 nodes: joint_state_publisher,
+                        robot_state_publisher,
+                        rviz -->
+    <node name="joint_state_publisher"
+          pkg="joint_state_publisher"
+          type="joint_state_publisher" />
+
+    <node name="robot_state_publisher"
+          pkg ="robot_state_publisher"
+          type="robot_state_publisher" />
+
+    <node name="rviz"
+          pkg ="rviz"
+          type="rviz"
+          args="-d $(find mantis_on_rack)/launch/settings.rviz"
+          required="true" 
+          />
+
+</launch>

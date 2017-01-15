@@ -1,0 +1,278 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="laskdfja" name="Mantis">
+
+<!-- Define Global Properties to be used repeatedly -->
+
+
+	<xacro:property name="offset" value="0.02" />
+	<xacro:property name="base_link_height" value="0.05058" />
+	<xacro:property name="base_to_housing_height" value="0.0072" />
+	<xacro:property name="origin_to_elbow_one" value="0.084282" />
+	<xacro:property name="link_one_length" value="0.2295" />
+	<xacro:property name="elbow_one_to_link_one" value="0.02745" />
+
+
+
+	<xacro:property name="main_link_length" value="0.1948" />
+	<xacro:property name="elbow_to_link_length" value="0.024" />
+	<xacro:property name="link_to_elbow_length" value="0.024" />
+
+
+<!-- Define the Macro for the main links.They are shared by all links, so we can define it here and use it for each portion. -->
+	<xacro:macro name="main_link" params="num_link length ">
+		<link name="link_${num_link}_main">
+			<collision>
+				<origin rpy="${pi/2} 0 0 " xyz="0 0 ${main_link_length/2+elbow_to_link_length}"/>
+				<geometry>
+					<cylinder length="${main_link_length}" radius=".024"/>
+				</geometry>
+			</collision>
+			<visual>
+				<origin rpy="${pi/2} 0 0 " xyz="0 0 ${main_link_length/2+elbow_to_link_length}"/>
+				<geometry>
+					<mesh filename="package://mantis_sim/mesh/122B-001-821.dae"/>
+				</geometry>
+			</visual>
+			<inertial>
+				<mass value="2.700308"/>
+				<inertia ixx="0.012688" ixy="0" ixz="0.0" iyy="0.000691" iyz="0.000017" izz="0.012681"/>
+			</inertial>
+		</link> 
+	</xacro:macro>
+
+<!-- Define the Macros for the joint housing. There exists 2 replica sets of joint housings, so we can define them here and use it for each portion. -->	
+
+
+	<xacro:macro name="housing_A" params="num_housing x y">
+		<link name="joint_${num_housing}_housing_A">
+			<collision>
+				<origin rpy="${pi} -${pi/2} -${pi/2}" xyz="${offset} ${offset} ${base_link_height}"/>
+				<geometry>
+					<cylinder length=".05" radius=".02"/>
+				</geometry>
+			</collision>
+
+			<visual>
+				<origin rpy="${pi/2} 0 ${pi/2}" xyz="0 0 ${main_link_length+elbow_to_link_length}"/>
+				<geometry>
+					<mesh filename="package://mantis_sim/mesh/122B-001-803_A.dae"/>
+				</geometry>
+			</visual>
+				
+			<inertial>
+				<mass value=".054044"/>
+				<inertia ixx="0.0000206" ixy="0" ixz="0.0" iyy="0.0000226" iyz="0.0" izz="0.0000222"/>
+			</inertial>
+		</link> 
+	</xacro:macro>
+
+	<xacro:macro name="housing_B" params="num_housing x y">
+		<link name="joint_${num_housing}_housing_B">
+			<collision>
+				<origin rpy="${pi} -${pi/2} -${pi/2}" xyz="0 0 -${2*offset}"/>
+				<geometry>
+					<cylinder length=".05" radius=".02"/>
+				</geometry>
+			</collision>
+
+			<visual>
+				<origin rpy="${pi/2} 0 ${pi/2}" xyz="${2*offset} 0 -${2*offset}"/>
+				<geometry>
+					<mesh filename="package://mantis_sim/mesh/122B-001-803_B.dae"/>
+				</geometry>
+			</visual>
+
+			<inertial>
+				<mass value=".04209"/>
+				<inertia ixx="0.0000128" ixy="0" ixz="0.0" iyy="0.0000168" iyz="0.0" izz="0.0000136"/>
+			</inertial>
+		</link> 
+	</xacro:macro>
+
+
+<!-- Here, we'll define a macro that combines the housings and main link macros. This way, we can just add as many joints and links as we want by just adding single lines of code.-->
+
+	<xacro:macro name="link_assy" params="num_assy link_length x y">
+		<!-- num_assy is an natural number, link_length must be a positive rational number, x and y must be either 0 or 1 -->
+		<!-- Define the bodies -->
+		<xacro:housing_A num_housing="${num_assy}" x="1" y="0"/>
+		<xacro:housing_B num_housing="${num_assy}" x="1" y="0"/>
+		<xacro:main_link num_link="${num_assy}" length="${link_length}"/> 
+
+		<!-- Define the Internal Joints -->
+
+		<!-- ======================= -->
+		<!-- Affix Housing to Previous link  -->
+		<!-- ======================= -->
+
+		<joint name="link_${num_assy-1}_to_elbow_${num_assy}" type="fixed">
+			<parent link="link_${num_assy-1}_main"/>
+			<child link="joint_${num_assy}_housing_A"/>
+		</joint> 
+
+		<!-- ======================= -->
+		<!-- Elbow  -->
+		<!-- ======================= -->
+		<joint name="elbow_${num_assy}" type="revolute">
+			<axis xyz="${x} ${y} 0"/>
+			<limit effort="1000.0" lower="-1.5" upper="1.5" velocity="0.25"/>
+			<origin rpy="0 0 0" xyz="-${2*offset} 0 ${elbow_to_link_length+main_link_length+link_to_elbow_length+offset}"/>
+			<parent link="joint_${num_assy}_housing_A"/>
+			<child link="joint_${num_assy}_housing_B"/>
+		</joint> 
+
+		<!-- ======================= -->
+		<!-- Twist Joint  -->
+		<!-- ======================= -->
+		<joint name="twist_${num_assy}" type="continuous">
+			<axis xyz="0 0 1"/>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<parent link="joint_${num_assy}_housing_B"/>
+			<child link="link_${num_assy}_main"/>
+		</joint> 
+
+		<!-- ======================= -->
+		<!-- Link  -->
+		<!-- ======================= -->
+		<joint name="elbow_${num_assy}_to_link_${num_assy}" type="fixed">
+			<parent link="joint_${num_assy}_housing_B"/>
+			<child link="link_${num_assy}_main"/>
+		</joint> 
+
+	</xacro:macro>
+
+
+<!-- ====================================  -->
+<!-- Housing for the Base and First Joint  -->
+<!-- ====================================  -->
+
+<!-- The Geometry of the base link and first arm are not the same as the subsequent links. Therefore, we must hardcode at least the first link.   -->
+
+<!-- BASE LINKS -->
+<!-- ======================= -->
+	<link name="base_link">
+		<collision>
+			<origin rpy="${pi/2.0} 0.0 0.0" xyz="-${offset} ${offset} 0.0"/>
+			<geometry>
+				<cylinder length="${base_link_height}" radius=".02"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="${pi/2.0} 0.0 0.0" xyz="-${offset} ${offset} 0.0"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-002.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="0.0565"/>
+			<inertia ixx="0.00006" ixy="0.0" ixz="0.0" iyy="0.00002" iyz="0.0" izz="0.00006"/>
+		</inertial>
+	</link>
+
+	<link name="joint_one_housing_A">
+		<collision>
+			<origin rpy="${pi} -${pi/2} -${pi/2}" xyz="${offset} ${offset} ${base_link_height}"/>
+			<geometry>
+				<cylinder length=".045" radius=".02"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="${pi} -${pi/2} -${pi/2}" xyz="${offset} ${offset} ${base_link_height}"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-020.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="0.0469"/>
+			<inertia ixx="0.0000139" ixy="0.0000042" ixz="0.0" iyy="0.0000165" iyz="0.0" izz="0.0000161"/>
+		</inertial>
+	</link>
+
+	<link name="joint_one_housing_B">
+		<visual>
+			<origin rpy="${pi} -${pi/2} ${pi/2}" xyz="0 -${offset} ${base_link_height+base_to_housing_height}"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-021.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="0.0206"/>
+			<inertia ixx="0.0000025" ixy="0.0" ixz="0.0" iyy="0.0000055" iyz="0.0" izz="0.0000031"/>
+		</inertial>
+	</link>
+
+	<link name="joint_one_elbow">
+		<collision>
+			<origin rpy="0 ${pi/2} ${pi/2}" xyz="${offset} -${offset} ${elbow_one_to_link_one}"/>
+			<geometry>
+				<cylinder length=".045" radius=".02"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="0 ${pi/2} ${pi/2}" xyz="${offset} -${offset} ${elbow_one_to_link_one}"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/122B-001-022.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="0.0386"/>
+			<inertia ixx="0.0000116" ixy="0" ixz="0.0" iyy="0.0000115" iyz="0.0" izz="0.0000094"/>
+		</inertial>
+	</link>
+
+	<xacro:main_link num_link="1" length="0.2295" />
+
+
+<!-- BASE JOINTS -->
+<!-- ======================= -->
+<!-- Fixed Base -->
+<joint name="base_to_joint_housing" type="fixed">
+	<parent link="base_link"/>
+	<child link="joint_one_housing_A"/>
+</joint>
+
+<joint name="joint_one" type="fixed">
+	<parent link="joint_one_housing_A"/>
+	<child link="joint_one_housing_B"/>
+</joint>
+
+<!-- ======================= -->
+<!-- Elbow 1 -->
+<!-- ======================= -->
+<joint name="elbow_1" type="revolute">
+	<axis xyz="1 0 0"/>
+	<limit effort="1000.0" lower="-1.5" upper="1.5" velocity="0.25"/>
+	<origin rpy="0 0 0" xyz="0 0 ${origin_to_elbow_one}"/>
+	<parent link="joint_one_housing_A"/>
+	<child link="joint_one_elbow"/>
+</joint>
+
+<!-- ======================= -->
+<!-- Elbow 1 -->
+<!-- ======================= -->
+<joint name="twist_1" type="continuous">
+	<axis xyz="0 0 1"/>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+	<parent link="base_link"/>
+	<child link="joint_one_housing_A"/>
+</joint>
+<!-- ======================= -->
+<!-- Link 1 -->
+<!-- ======================= -->
+<joint name="link_1_base_to_elbow_1" type="fixed">
+	<parent link="joint_one_elbow"/>
+	<child link="link_1_main"/>
+</joint>
+
+
+
+
+
+
+<!-- ======================= -->
+<!-- SUBSEQUENT LINKS -->
+<!-- ======================= -->
+	<xacro:link_assy num_assy="2" link_length=".1968" x="1" y="0" /> 
+	<xacro:link_assy num_assy="3" link_length=".1968" x="0" y="1" /> 
+
+</robot>

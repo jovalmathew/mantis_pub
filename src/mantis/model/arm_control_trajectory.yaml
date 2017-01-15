@@ -1,0 +1,30 @@
+mantis:
+  # Publish all joint states -----------------------------------
+    joint_state_controller:
+        type: joint_state_controller/JointStateController
+        publish_rate: 50
+
+    arm_controller:
+        type: "effort_controllers/JointTrajectoryController"
+        joints:
+            - J1_roll
+            - J2_pitch
+            - J3_roll
+            - J4_pitch
+            - J5_roll
+            - J6_pitch
+            - J7_roll
+            - J8_pitch
+            - J9_wrist
+        gains:
+            J1_roll:  {p: 1000.0, i: 0.1, d: 1.0}
+            J2_pitch: {p: 10.0,   i: 0.3, d: 2.0}
+            J3_roll:  {p: 1000.0, i: 0.1, d: 1.0}
+            J4_pitch: {p: 1000.0, i: 0.1, d: 1.0}
+            J5_roll:  {p: 1000.0, i: 0.1, d: 1.0}
+            J6_pitch: {p: 1000.0, i: 0.1, d: 1.0}
+            J7_roll:  {p: 1000.0, i: 0.1, d: 1.0}
+            J8_pitch: {p: 1000.0, i: 0.1, d: 1.0}
+            J9_wrist: {p: 1000.0, i: 0.1, d: 1.0}
+
+

@@ -1,0 +1,34 @@
+<launch>
+
+
+	<!-- Load a default empty environment background -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <!-- Accept an optional debug and paused flag -->
+        <arg name="debug" default="false"/>
+	</include>
+
+	<!-- Accept an optional model argument
+        (The default is currently all that should be used) -->
+	<arg name="model" default= "$(find mantis)/model/arm_gazebo_default.urdf.xacro"/>
+
+	<!-- Convert the xacro to a urdf (w/xacro command) and put the urdf on the parameter server -->
+	<param name="robot_description" command= "$(find xacro)/xacro --inorder $(arg model)" />"
+
+	<!-- Spawn an instance of the model into Gazebo -->
+	<node   name="spawn_urdf" pkg="gazebo_ros"
+            type="spawn_model"
+            respawn="false"
+            output="screen"
+            args="-urdf -model mantis -param robot_description " >
+	</node>
+
+	<!-- Run the JSP node to publish joint values -->
+	<node   name="joint_state_publisher"
+            pkg= "joint_state_publisher"
+            type="joint_state_publisher" >
+	</node>
+
+	<!-- Launch the arm controller -->
+	<include file="$(find mantis)/launch/arm_control.launch" />
+
+</launch>

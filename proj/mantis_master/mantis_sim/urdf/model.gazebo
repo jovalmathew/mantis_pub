@@ -1,0 +1,538 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="laskdfja" name="Mantis">
+
+<!-- Define Global Properties to be used repeatedly -->
+
+
+	<xacro:property name="offset" value="0.02" />
+	<xacro:property name="base_link_height" value="0.05058" />
+	<xacro:property name="origin_to_elbow" value="0.084282" />
+	<xacro:property name="joint_to_link" value="0.024" />
+	<xacro:property name="link_length" value="0.1948" />
+
+<!-- Define the Macro for the main link  properties.They are shared by all three links, so we can define it here and use it for each portion. -->
+
+	<xacro:macro name="inertia_main_link" >
+		<inertial>
+			<mass value=".05798"/>
+			<inertia ixx="0.1431" ixy="-0.06" ixz="0.001" iyy="0.012" iyz="-0.02" izz="0.143"/>
+		</inertial>
+	</xacro:macro>
+
+
+	<xacro:macro name="mesh_link" >
+		<geometry>
+			<mesh filename="package://mantis_sim/mesh/link.dae"/>
+		</geometry>
+	</xacro:macro>
+
+<!-- Define the Macros for the joint housing mass properties. There exists 2 replica sets of joint housings, so we can define them here and use it for each portion. We can do the same for their meshes-->	
+	<xacro:macro name="inertia_joint" >
+		<inertial>
+			<mass value=".054044"/>
+			<inertia ixx="0.00206" ixy="0" ixz="0.0" iyy="0.00226" iyz="0.0" izz="0.00222"/>
+		</inertial>
+	</xacro:macro>
+
+	<xacro:macro name="mesh_joint" >
+		<geometry>
+			<mesh filename="package://mantis_sim/mesh/joint.dae"/>
+		</geometry>
+	</xacro:macro>
+
+<!-- ======================= -->
+<!-- Housing for the First Joint  -->
+<!-- ======================= -->
+	<link name="base_link">
+		<collision>
+			<origin rpy="0 0.0 0.0" xyz="0 0 ${base_link_height/2}"/>
+			<geometry>
+				<cylinder length="${base_link_height/2}" radius=".02"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="${pi/2.0} 0.0 0.0" xyz="0 0 0.0"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/Base_Plate.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="0.0565"/>
+			<inertia ixx="0.0006" ixy="0.0" ixz="0.0" iyy="0.0002" iyz="0.0" izz="0.0006"/>
+		</inertial>
+	</link>
+
+
+	<link name="base_elbow">
+		<collision>
+			<origin rpy="0 0 0" xyz="0 0 ${joint_to_link}"/>
+			<geometry>
+				<cylinder length=".045" radius=".02"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="0 ${pi/2} ${pi/2}" xyz="${offset} -${offset} ${joint_to_link}"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/base_elbow.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value="0.0386"/>
+			<inertia ixx="0.000116" ixy="0" ixz="0.0" iyy="0.000115" iyz="0.0" izz="0.000094"/>
+		</inertial>
+	</link>
+
+<!-- ======================= -->
+<!-- Link 1 -->
+<!-- ======================= -->
+
+	<link name="link_one_base">
+		<collision>
+			<origin rpy="0 0 0" xyz="0 0 ${joint_to_link}"/>
+			<geometry>
+				<box size=".04 .04 .0035"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="${pi/2} 0 ${pi}" xyz="${offset} -${offset} ${joint_to_link}"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/base_to_link.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".014734"/>
+			<inertia ixx="0.00019" ixy="0" ixz="0.0" iyy="0.0004" iyz="0.0" izz="0.00021"/>
+		</inertial>
+	</link> 
+
+	<link name="link_one_main">
+		<collision>
+			<origin rpy="0 0 0" xyz="0 0 ${link_length/2+joint_to_link}"/>
+			<geometry>
+				<cylinder length="${link_length}" radius=".024"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="${pi/2} 0 ${pi/2}" xyz="0 0 ${link_length/2+joint_to_link}"/>
+			<xacro:mesh_link/>
+		</visual>
+		<xacro:inertia_main_link/>
+	</link> 
+
+
+<!-- ======================= -->
+<!-- Housing for Joint 2  -->
+<!-- ======================= -->
+
+
+	<link name="joint_two_housing_A">
+		<collision>
+			<origin rpy="0 ${pi/2} 0" xyz="0 0 ${link_length+2*joint_to_link}"/>
+			<geometry>
+				<cylinder length=".05" radius=".02"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="0 -${pi/2} ${pi/2}" xyz="${offset} ${offset} ${link_length+joint_to_link}"/>
+			<xacro:mesh_joint/>
+		</visual>
+		<xacro:inertia_joint/>
+	</link> 
+
+	<link name="joint_two_housing_B">
+		<collision>
+			<origin rpy="0 ${pi/2} 0" xyz="${2*offset} 0 0"/>
+			<geometry>
+				<cylinder length=".05" radius=".02"/>
+			</geometry>
+		</collision>
+
+		<visual>
+			<origin rpy="${pi/2} ${pi/2} 0" xyz="${offset} ${offset} ${offset}"/>
+			<xacro:mesh_joint/>
+		</visual>
+		<xacro:inertia_joint/>
+	</link> 
+
+
+<!-- ======================= -->
+<!-- Link 2  -->
+<!-- ======================= -->
+
+
+	<link name="link_two_main">
+		<collision>
+			<origin rpy="0 0 0" xyz="0 0 ${joint_to_link+link_length/2}"/>
+			<geometry>
+				<cylinder length="${link_length}" radius=".024"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="${pi/2} 0 ${pi/2}" xyz="0 0 ${joint_to_link+link_length/2}"/>
+			<xacro:mesh_link/>
+		</visual>
+		<xacro:inertia_main_link/>
+	</link> 
+
+
+<!-- ======================= -->
+<!-- Housing for Joint 3  -->
+<!-- ======================= -->
+
+
+	<link name="joint_three_housing_A">
+		<collision>
+			<origin rpy="${pi/2} 0 0" xyz="0 0 ${2*joint_to_link+link_length}"/>
+			<geometry>
+				<cylinder length=".05" radius=".02"/>
+			</geometry>
+		</collision>
+
+		<visual>
+			<origin rpy="-${pi/2} -${pi/2} ${pi/2}" xyz="${offset} -${offset} ${joint_to_link+link_length}"/>
+			<xacro:mesh_joint/>
+		</visual>
+		<xacro:inertia_joint/>
+	</link> 
+
+	<link name="joint_three_housing_B">
+		<collision>
+			<origin rpy="${pi/2} 0 0" xyz="0 ${2*offset} 0"/>
+			<geometry>
+				<cylinder length=".05" radius=".02"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="-${pi} ${pi/2} 0" xyz="${offset} ${3*offset} ${offset}"/>
+			<xacro:mesh_joint/>
+		</visual>
+		<xacro:inertia_joint/>
+	</link> 
+
+
+<!-- ======================= -->
+<!-- Link 3  -->
+<!-- ======================= -->
+
+
+	<link name="link_three_main">
+		<collision>
+			<origin rpy="0 0 0" xyz="0 0 ${joint_to_link+link_length/2+.004}"/>
+			<geometry>
+				<cylinder length="${link_length}" radius=".024"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="${pi/2} 0 0" xyz="0 0 ${joint_to_link+link_length/2+.004}"/>
+			<xacro:mesh_link/>
+		</visual>
+		<xacro:inertia_main_link/>
+	</link> 
+
+
+<!-- ======================= -->
+<!-- Housing for Wrist Joint  -->
+<!-- ======================= -->
+
+
+	<link name="wrist_housing_A">
+		<collision>
+			<origin rpy="${pi/2} 0 0" xyz="0 0 ${2*joint_to_link+link_length}"/>
+			<geometry>
+				<cylinder length=".05" radius=".02"/>
+			</geometry>
+		</collision>
+
+		<visual>
+			<origin rpy="-${pi/2} -${pi/2} ${pi/2}" xyz="${offset} -${offset} ${joint_to_link+link_length}"/>
+			<xacro:mesh_joint/>
+		</visual>
+		<xacro:inertia_joint/>
+	</link> 
+
+
+	<link name="wrist_housing_B">
+		<collision>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<cylinder length=".05" radius=".02"/>
+			</geometry>
+		</collision>
+
+		<visual>
+			<origin rpy="-${pi/2} 0 0" xyz="-${offset} -${offset} ${offset}"/>
+			<xacro:mesh_joint/>
+		</visual>
+		<xacro:inertia_joint/>
+	</link> 
+
+
+	<link name="wrist_attach_point">
+		<collision>
+			<origin rpy="0 ${pi/2} 0 " xyz="-${2*offset} 0 0"/>
+			<geometry>
+				<box size=".035 .035 .025"/>
+			</geometry>
+
+		</collision>
+		<visual>
+			<origin rpy="0 0 ${pi/2}" xyz="-${offset} -${offset} -${offset}"/>
+			<geometry>
+				<mesh filename="package://mantis_sim/mesh/wrist_attachment.dae"/>
+			</geometry>
+		</visual>
+		<inertial>
+			<mass value=".0184764"/>
+			<inertia ixx="0.0000052" ixy="0" ixz="0.0" iyy="0.0000084" iyz="0.000017" izz="0.0000052"/>
+		</inertial>
+	</link> 
+
+
+
+<!-- ======================= -->
+<!-- ======================= -->
+<!-- ======================= -->
+<!-- JOINTS AND ACTUATION -->
+<!-- ======================= -->
+<!-- ======================= -->
+
+<!-- ======================= -->
+<!-- Elbow 1 -->
+<!-- ======================= -->
+<joint name="elbow_1" type="revolute">
+	<axis xyz="1 0 0"/>
+	<limit effort="1000.0" lower="-1.5" upper="1.5" velocity="0.25"/>
+	<origin rpy="0 0 0" xyz="0 0 ${origin_to_elbow}"/>
+	<parent link="base_link"/>
+	<child link="base_elbow"/>
+</joint>
+
+<transmission name="elbow_trans_1">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="elbow_1">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="elbow_mot_1">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</actuator>
+</transmission>
+
+<!-- ======================= -->
+<!-- roll 1 -->
+<!-- ======================= -->
+
+
+<joint name="roll_1" type="continuous">
+	<axis xyz="0 0 1"/>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+	<parent link="base_elbow"/>
+	<child link="link_one_base"/>
+</joint>
+
+
+<transmission name="roll_trans_1">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="roll_1">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="roll_mot_1">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</actuator>
+</transmission>
+
+<!-- ======================= -->
+<!-- Link 1 -->
+<!-- ======================= -->
+
+
+<joint name="link_1_A" type="fixed">
+	<parent link="link_one_base"/>
+	<child link="link_one_main"/>
+</joint>
+
+
+<joint name="link_1_to_elbow_2" type="fixed">
+	<parent link="link_one_main"/>
+	<child link="joint_two_housing_A"/>
+</joint>
+
+
+<!-- ======================= -->
+<!-- Elbow 2 -->
+<!-- ======================= -->
+
+
+<joint name="elbow_2" type="revolute">
+	<axis xyz="1 0 0"/>
+	<limit effort="1000.0" lower="-1.5" upper="1.5" velocity="0.25"/>
+	<origin rpy="0 0 0" xyz="0 0 ${link_length+2*joint_to_link}"/>
+	<parent link="joint_two_housing_A"/>
+	<child link="joint_two_housing_B"/>
+</joint>
+
+
+<transmission name="elbow_trans_2">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="elbow_2">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="elbow_mot_2">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</actuator>
+</transmission>
+
+
+<!-- ======================= -->
+<!-- roll 2 -->
+<!-- ======================= -->
+
+
+<joint name="roll_2" type="continuous">
+	<axis xyz="0 0 1"/>
+	<origin rpy="0 0 0" xyz="${2*offset} 0 0"/>
+	<parent link="joint_two_housing_B"/>
+	<child link="link_two_main"/>
+</joint>
+
+<transmission name="roll_trans_2">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="roll_2">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="roll_mot_2">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</actuator>
+</transmission>
+
+
+
+<!-- ======================= -->
+<!-- Link 2 -->
+<!-- ======================= -->
+
+
+
+<joint name="link_2_to_elbow_3" type="fixed">
+	<parent link="link_two_main"/>
+	<child link="joint_three_housing_A"/>
+</joint>
+
+
+<!-- ======================= -->
+<!-- Elbow 3 -->
+<!-- ======================= -->
+
+
+<joint name="elbow_3" type="revolute">
+	<axis xyz="0 1 0"/>
+	<limit effort="1000.0" lower="-1.5" upper="1.5" velocity="0.25"/>
+	<origin rpy="0 0 0" xyz="0 0 ${link_length+2*joint_to_link}"/>
+	<parent link="joint_three_housing_A"/>
+	<child link="joint_three_housing_B"/>
+</joint>
+
+<transmission name="elbow_trans_3">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="elbow_3">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="elbow_mot_3">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</actuator>
+</transmission>
+
+
+<!-- ======================= -->
+<!-- roll 3 -->
+<!-- ======================= -->
+
+
+<joint name="roll_3" type="continuous">
+	<axis xyz="0 0 1"/>
+	<origin rpy="0 0 0" xyz="0 ${2*offset} 0"/>
+	<parent link="joint_three_housing_B"/>
+	<child link="link_three_main"/>
+</joint>
+
+<transmission name="roll_trans_3">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="roll_3">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="roll_mot_3">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</actuator>
+</transmission>
+
+
+<!-- ======================= -->
+<!-- Link 3 -->
+<!-- ======================= -->
+
+
+
+
+<joint name="link_3_to_wrist" type="fixed">
+	<parent link="link_three_main"/>
+	<child link="wrist_housing_A"/>
+</joint>
+
+
+<!-- ======================= -->
+<!-- Wrist -->
+<!-- ======================= -->
+
+
+
+<joint name="wrist" type="continuous">
+	<axis xyz="1 0 0"/> 
+	<origin rpy="-${pi/2} 0 0" xyz="0.00 ${2*offset} ${joint_to_link+link_length+joint_to_link}"/>
+	<parent link="wrist_housing_A"/>
+	<child link="wrist_housing_B"/>
+</joint>
+
+
+<transmission name="wrist_trans">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="wrist">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="wrist_mot">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+	</actuator>
+</transmission>
+
+<joint name="wrist_attachment_joint" type="fixed">
+	<parent link="wrist_housing_B"/>
+	<child link="wrist_attach_point"/>
+</joint>
+
+
+<!-- =============================== -->
+<!-- GAZEBO SPECIFIC ADD ONS   -->
+<!-- =============================== -->
+
+<!-- =============================== -->
+<!-- ROS_Control Plugin for Gazebo   -->
+<!-- =============================== -->
+<gazebo>
+	<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+		<robotNamespace>/mantis</robotNamespace>
+	</plugin>
+</gazebo>
+
+<!-- ======================= -->
+<!-- World Link for Gazebo   -->
+<!-- ======================= -->
+	<link name="world"/>
+
+
+<!-- ======================= -->
+<!-- World Joint  for Gazebo   -->
+<!-- ======================= -->
+<joint name="fixed" type="fixed">
+	<parent link="world"/>
+	<child link="base_link"/>
+</joint>
+
+</robot>

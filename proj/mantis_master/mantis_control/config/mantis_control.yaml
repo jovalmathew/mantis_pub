@@ -1,0 +1,66 @@
+mantis:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 30  
+
+  # Position Controllers ---------------------------------------
+  elbow1_pos_control:
+    type: effort_controllers/JointPositionController
+    joint: elbow_1
+    pid: {p: 5.0, i: 0.001, d: 0.0005}
+  elbow2_pos_control:
+    type: effort_controllers/JointPositionController
+    joint: elbow_2
+    pid: {p: 5.0, i: 0.001, d: 0.0005}
+  elbow3_pos_control:
+    type: effort_controllers/JointPositionController
+    joint: elbow_3
+    pid: {p: 5.0, i: 0.001, d: 0.0005}
+  roll1_pos_control:
+    type: effort_controllers/JointPositionController
+    joint: roll_1
+    pid: {p: 5.0, i: 0.001, d: 0.0001}
+  roll2_pos_control:
+    type: effort_controllers/JointPositionController
+    joint: roll_2
+    pid: {p: 5.0, i: 0.001, d: 0.0001}
+  roll3_pos_control:
+    type: effort_controllers/JointPositionController
+    joint: roll_3
+    pid: {p: 5.0, i: 0.001, d: 0.0001}
+  wrist_pos_control:
+    type: effort_controllers/JointPositionController
+    joint: wrist
+    pid: {p: 5.0, i: 0.001, d: 0.001} 
+
+
+      # Velocity Controllers ---------------------------------------
+  elbow1_vel_control:
+    type: velocity_controllers/JointVelocityController
+    joint: elbow_1
+    pid: {p: 1.0, i: 0.05, d: 1.5}
+  elbow2_vel_control:
+    type: velocity_controllers/JointVelocityController
+    joint: elbow_2
+    pid: {p: 1.0, i: 0.05, d: 1.5}
+  elbow3_vel_control:
+    type: velocity_controllers/JointVelocityController
+    joint: elbow_3
+    pid: {p: 1.0, i: 0.05, d: 1.1}
+  roll1_vel_control:
+    type: velocity_controllers/JointVelocityController
+    joint: roll_1
+    pid: {p: 1.0, i: 0.01, d: 0.1}
+  roll2_vel_control:
+    type: velocity_controllers/JointVelocityController
+    joint: roll_2
+    pid: {p: 1.0, i: 0.01, d: 0.1}
+  roll3_vel_control:
+    type: velocity_controllers/JointVelocityController
+    joint: roll_3
+    pid: {p: 1.0, i: 0.01, d: 0.1}
+  wrist_vel_control:
+    type: velocity_controllers/JointVelocityController
+    joint: wrist
+    pid: {p: 1.0, i: 0.01, d: 0.1} 

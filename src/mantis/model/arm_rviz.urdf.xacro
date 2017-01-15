@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+
+<!-- This model file is simply a wrapper for the base arm model
+    so that changes are only made in the base model -->
+
+<robot name="MantisViz"
+       xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+
+
+    <!-- Include the base model here before adding rviz-specific blocks -->
+    <!-- This include simply defines a macro for defining an arm -->
+    <xacro:include filename="arm.urdf" />
+    <!-- Call the arm definition with a default origin -->
+    <link name="anchor_point" />
+    <xacro:mantis_arm env_base="anchor_point">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:mantis_arm>
+
+
+
+</robot>
+

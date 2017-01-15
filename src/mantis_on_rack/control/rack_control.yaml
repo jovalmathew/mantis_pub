@@ -1,0 +1,18 @@
+express_rack:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 30
+
+  # Position Controllers ---------------------------------------
+  #
+  #### Gain Tuning Test Case ####
+  # p=1000.0, i=0.01, d=0.2  (for empty world)
+  ####
+  # rqt_gui error analysis (sin inputs to each joint simultaneously)
+  # indicates max errors of  5-10 degrees / joint
+  ###
+  Tray_control:
+    type: effort_controllers/JointPositionController
+    joint: nanoracks_tray
+    pid: {p: 10.0, i: 0.01, d: 0.001}
